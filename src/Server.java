@@ -79,7 +79,8 @@ public class Server {
     public static void append(List<String> list) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter("database.txt", true));
-            for (int i = 0; i < list.size(); i++) {
+            // 0 == command
+            for (int i = 1; i < list.size(); i++) {
                 bw.write(list.get(i));
                 if (i == list.size()-1)
                     bw.write("\n");
