@@ -10,6 +10,13 @@ public class Server {
         HashMap<String, User> data = new HashMap<>();
 
         try {
+            BufferedReader br = new BufferedReader(new FileReader("database.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] d = line.split(", ");
+                data.put(d[2], new User(d[0], d[1], d[2], d[3], d[4], d[5]));
+            }
+
             System.out.println("Server is waiting for client.");
             ServerSocket serverSocket = new ServerSocket(6600);
 
@@ -19,7 +26,7 @@ public class Server {
                 new Thread(() -> {
                     try {
                         task(data, sc);
-                    } catch (IOException | ClassNotFoundException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }).start();
@@ -30,7 +37,7 @@ public class Server {
         }
     }
 
-    private static void task(HashMap<String, User> data, Socket sc) throws IOException, ClassNotFoundException {
+    private static void task(HashMap<String, User> data, Socket sc) throws Exception {
         OutputStreamWriter o = new OutputStreamWriter(sc.getOutputStream());
         BufferedWriter sendStr = new BufferedWriter(o);
 
@@ -93,4 +100,6 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+
 }
