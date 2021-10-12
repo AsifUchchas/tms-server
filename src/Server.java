@@ -10,6 +10,9 @@ public class Server {
         HashMap<String, User> data = new HashMap<>();
 
         try {
+            File file = new File("database.txt");
+            boolean isFileCreated = file.createNewFile();
+
             BufferedReader br = new BufferedReader(new FileReader("database.txt"));
             String line;
             while ((line = br.readLine()) != null) {
