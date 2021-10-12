@@ -23,7 +23,6 @@ public class Server {
             System.out.println("Server is waiting for client.");
             ServerSocket serverSocket = new ServerSocket(6600);
 
-
             while (true) {
                 Socket sc = serverSocket.accept();
                 new Thread(() -> {
@@ -53,11 +52,11 @@ public class Server {
         InputStreamReader isr = new InputStreamReader(sc.getInputStream());
         BufferedReader receiveStr = new BufferedReader(isr);
 
-        System.out.println(" - Receiving request");
         List<String> info = (List<String>) receiveObj.readObject();
+        System.out.println(" - Received request for " + info.get(0));
         String command = info.get(0);
         if (command.equals("Registration")) {
-            System.out.println(" - Received request for registration");
+            System.out.println(" - Attempt to registration");
             if (!data.containsKey(info.get(3))) {
                 data.put(info.get(3), new User(info.get(1), info.get(2), info.get(3), info.get(4), info.get(5), info.get(6)));
                 append(info);
@@ -70,8 +69,8 @@ public class Server {
             sendStr.flush();
         }
         else if (command.equals("Login")) {
-            System.out.println(" - Received request for Login");
-            if (data.containsKey(info.get(1))) {
+            System.out.println(" - Attempt to Login");
+            if (!data.isEmpty() && data.containsKey(info.get(1))) {
                 if (data.get(info.get(1)).getPasswords().equals(info.get(2))) {
                     System.out.println(" - login success");
                     sendStr.write("SUCCESS!\n");
@@ -87,12 +86,12 @@ public class Server {
                     sendInfo.add(usr.getType());
                     sendObj.writeObject(sendInfo);
                     System.out.println(" - info send successfully!");
-                } else {
-                    System.out.println(" - login failed!!");
-                    sendStr.write("FAILED!\n");
-                    sendStr.flush();
+                    return;
                 }
             }
+            System.out.println(" - Invalid credentials, login failed!!");
+            sendStr.write("FAILED!\n");
+            sendStr.flush();
         }
     }
 
