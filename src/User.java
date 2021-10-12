@@ -3,12 +3,12 @@ import java.io.Serializable;
 public class User implements Serializable {
     private String name;
     private String nid;
-    private String phone;
     private String email;
+    private String phone;
     private String passwords;
     private String type;
 
-    public User(String name, String nid, String phone, String email, String passwords, String type) {
+    public User(String name, String nid, String email, String passwords, String phone, String type) {
         this.name = name;
         this.nid = nid;
         this.phone = phone;
