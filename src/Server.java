@@ -1,5 +1,4 @@
 import java.io.*;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.List;
 public class Server {
     public static void main(String[] args) {
         HashMap<String, User> data = new HashMap<>();
-        HashMap<String, Integer> place = new HashMap<>();   // read place info
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("database.txt"));
@@ -18,7 +16,6 @@ public class Server {
                 String[] d = line.split(", ");
                 data.put(d[2], new User(d[0], d[1], d[2], d[3], d[4], d[5]));
             }
-            br.close();
 
             System.out.println("Server is waiting for client.");
             ServerSocket serverSocket = new ServerSocket(6600);
@@ -28,7 +25,7 @@ public class Server {
                 Socket sc = serverSocket.accept();
                 new Thread(() -> {
                     try {
-                        task(data, place, sc);
+                        task(data, sc);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -40,7 +37,7 @@ public class Server {
         }
     }
 
-    private static void task(HashMap<String, User> data, HashMap<String, Integer> place, Socket sc) throws Exception {
+    private static void task(HashMap<String, User> data, Socket sc) throws Exception {
         OutputStreamWriter o = new OutputStreamWriter(sc.getOutputStream());
         BufferedWriter sendStr = new BufferedWriter(o);
 
@@ -93,11 +90,6 @@ public class Server {
                     sendStr.flush();
                 }
             }
-        }
-        // commands
-        else if (info.get(0).equals("Select Place")) {
-            int val = place.get(info.get(1));
-            place.put(info.get(1), val +1);
         }
     }
 
