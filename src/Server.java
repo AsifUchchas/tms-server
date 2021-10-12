@@ -50,22 +50,30 @@ public class Server {
         InputStreamReader isr = new InputStreamReader(sc.getInputStream());
         BufferedReader receiveStr = new BufferedReader(isr);
 
+        System.out.println(" - Receiving request");
         List<String> info = (List<String>) receiveObj.readObject();
         String command = info.get(0);
         if (command.equals("Registration")) {
+            System.out.println(" - Received request for registration");
             if (!data.containsKey(info.get(3))) {
                 data.put(info.get(3), new User(info.get(1), info.get(2), info.get(3), info.get(4), info.get(5), info.get(6)));
                 append(info);
                 sendStr.write("SUCCESS!\n");
-            } else
+                System.out.println(" - Registration Successful");
+            } else{
                 sendStr.write("FAILED!\n");
+                System.out.println(" - Registration failed! Duplicate email found!");
+            }
             sendStr.flush();
         }
         else if (command.equals("Login")) {
+            System.out.println(" - Received request for Login");
             if (data.containsKey(info.get(1))) {
                 if (data.get(info.get(1)).getPasswords().equals(info.get(2))) {
+                    System.out.println(" - login success");
                     sendStr.write("SUCCESS!\n");
                     sendStr.flush();
+                    System.out.println(" - sending user info");
                     List<String> sendInfo = new ArrayList<>();
                     User usr = data.get(info.get(1));
                     sendInfo.add(usr.getName());
@@ -75,7 +83,9 @@ public class Server {
                     sendInfo.add("null");   // passwords are not sending for security
                     sendInfo.add(usr.getType());
                     sendObj.writeObject(sendInfo);
+                    System.out.println(" - info send successfully!");
                 } else {
+                    System.out.println(" - login failed!!");
                     sendStr.write("FAILED!\n");
                     sendStr.flush();
                 }
